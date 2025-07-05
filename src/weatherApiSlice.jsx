@@ -5,8 +5,9 @@ export const fetchWeather = createAsyncThunk(
 	"weatherApi/fetchWeather",
 	async () => {
 		const response = await axios.get(
-			"https://api.openweathermap.org/data/2.5/weather?lat=24.7&lon=46.5&appid=2c511dc8a04616514a9e1ff2f31c8043"
+			"https://api.openweathermap.org/data/2.5/weather?lat=30.0444&lon=31.2357&appid=118fc1685b19651454cd67307200e2f7"
 		);
+		console.log(response);
 
 		// handle success
 		const responseTemp = Math.round(response.data.main.temp - 272.15);
@@ -22,6 +23,7 @@ export const fetchWeather = createAsyncThunk(
 			description,
 			icon: `https://openweathermap.org/img/wn/${responseIcon}@2x.png`,
 		};
+		
 	}
 );
 const weatherApiSlice = createSlice({

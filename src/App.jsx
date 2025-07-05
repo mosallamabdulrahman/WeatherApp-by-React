@@ -13,222 +13,178 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 // EXTERNAL LIBRARIES
 import moment from "moment";
-import "moment/min/locales";
+import "moment/locale/ar";
 import { useTranslation } from "react-i18next";
 
 // REDUX IMPORT
 import { useSelector, useDispatch } from "react-redux";
 import { fetchWeather } from "./weatherApiSlice";
 
-moment.locale("ar");
-
 const theme = createTheme({
-	typography: {
-		fontFamily: ["IBM"],
-	},
+  typography: {
+    fontFamily: ["IBM"],
+  },
 });
 
-let cancelAxios = null;
-
 function App() {
-	// REDUX CODE
-	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-	const isLoading = useSelector((state) => {
-		return state.weather.isLoading;
-	});
+  const isLoading = useSelector((state) => state.weather.isLoading);
+  const temp = useSelector((state) => state.weather.weather);
 
-	const temp = useSelector((state) => {
-		return state.weather.weather;
-	});
+  const { t, i18n } = useTranslation();
 
-	const { t, i18n } = useTranslation();
+  const [dateAndTime, setDateAndTime] = useState("");
+  const [locale, setLocale] = useState("ar");
 
-	// ======== STATES ========= //
-	const [dateAndTime, setDateAndTime] = useState("");
+  const direction = locale === "ar" ? "rtl" : "ltr";
 
-	const [locale, setLocale] = useState("ar");
+  function handleLanguageClick() {
+    const newLocale = locale === "en" ? "ar" : "en";
+    setLocale(newLocale);
+  }
 
-	const direction = locale == "ar" ? "rtl" : "ltr";
-	// ======== EVENT HANDLERS ========= //
-	function handleLanguageClick() {
-		if (locale == "en") {
-			setLocale("ar");
-			i18n.changeLanguage("ar");
-			moment.locale("ar");
-		} else {
-			setLocale("en");
-			i18n.changeLanguage("en");
-			moment.locale("en");
-		}
+  useEffect(() => {
+    dispatch(fetchWeather());
+  }, [dispatch]);
 
-		setDateAndTime(moment().format("MMMM Do YYYY, h:mm:ss a"));
-	}
-	useEffect(() => {
-		dispatch(fetchWeather());
+  useEffect(() => {
+    i18n.changeLanguage(locale);
+    moment.locale(locale);
+    setDateAndTime(moment().locale(locale).format("LLLL"));
+  }, [locale, i18n]);
 
-		i18n.changeLanguage(locale);
-	}, []);
-	useEffect(() => {
-		setDateAndTime(moment().format("MMMM Do YYYY, h:mm:ss a"));
-	}, []);
-	return (
-		<div className="App">
-			<ThemeProvider theme={theme}>
-				<Container maxWidth="sm">
-					{/* CONTENT CONTAINER */}
-					<div
-						style={{
-							height: "100vh",
-							display: "flex",
-							justifyContent: "center",
-							alignItems: "center",
-							flexDirection: "column",
-						}}
-					>
-						{/* CARD */}
-						<div
-							dir={direction}
-							style={{
-								width: "100%",
-								background: "rgb(28 52 91 / 36%)",
-								color: "white",
-								padding: "10px",
-								borderRadius: "15px",
-								boxShadow: "0px 11px 1px rgba(0,0,0,0.05)",
-							}}
-						>
-							{/* CONTENT */}
-							<div>
-								{/* CITY & TIME */}
-								<div
-									style={{
-										display: "flex",
-										alignItems: "end",
-										justifyContent: "start",
-									}}
-									dir={direction}
-								>
-									<Typography
-										variant="h2"
-										style={{
-											marginRight: "20px",
-											fontWeight: "600",
-										}}
-									>
-										{t("Riyadh")}
-									</Typography>
+  return (
+    <div className="App">
+      <ThemeProvider theme={theme}>
+        <Container maxWidth="sm">
+          <div
+            style={{
+              height: "100vh",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              dir={direction}
+              style={{
+                width: "100%",
+                background: "rgb(28 52 91 / 36%)",
+                color: "white",
+                padding: "10px",
+                borderRadius: "15px",
+                boxShadow: "0px 11px 1px rgba(0,0,0,0.05)",
+              }}
+            >
+              <div>
+                <div
+                  className="up-details"
+                  style={{
+                    display: "flex",
+                    alignItems: "end",
+                    justifyContent: "start",
+                  }}
+                  dir={direction}
+                >
+                  <Typography
+                    variant="h2"
+                    style={{
+                      marginRight: "20px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {t("Cairo")}
+                  </Typography>
 
-									<Typography
-										variant="h5"
-										style={{ marginRight: "20px" }}
-									>
-										{dateAndTime}
-									</Typography>
-								</div>
-								{/* == CITY & TIME == */}
+                  <Typography variant="h5" style={{ marginRight: "20px" }}>
+                    {dateAndTime}
+                  </Typography>
+                </div>
 
-								<hr />
+                <hr />
 
-								{/* CONTAINER OF DEGREE + CLOUD ICON */}
-								<div
-									style={{
-										display: "flex",
-										justifyContent: "space-around",
-									}}
-								>
-									{/* DEGREE & DESCRIPTION */}
-									<div>
-										{/* TEMP */}
-										<div
-											style={{
-												display: "flex",
-												justifyContent: "center",
-												alignItems: "center",
-											}}
-										>
-											{isLoading ? (
-												<CircularProgress
-													style={{ color: "white" }}
-												/>
-											) : (
-												""
-											)}
+                <div
+                  className="details"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {isLoading ? (
+                        <CircularProgress style={{ color: "white" }} />
+                      ) : (
+                        ""
+                      )}
 
-											<Typography
-												variant="h1"
-												style={{ textAlign: "right" }}
-											>
-												{temp.number}
-											</Typography>
+                      <Typography variant="h1" style={{ textAlign: "right" }}>
+                        {temp.number}
+                      </Typography>
 
-											<img src={temp.icon} />
-										</div>
-										{/*== TEMP ==*/}
+                      <img src={temp.icon} alt="weather icon" />
+                    </div>
 
-										<Typography variant="h6">
-											{t(temp.description)}
-										</Typography>
+                    <Typography variant="h6">{t(temp.description)}</Typography>
 
-										{/* MIN & MAX */}
-										<div
-											style={{
-												display: "flex",
-												justifyContent: "space-between",
-												alignItems: "center",
-											}}
-										>
-											<h5>
-												{t("min")}: {temp.min}
-											</h5>
-											<h5 style={{ margin: "0px 5px" }}>
-												|
-											</h5>
-											<h5>
-												{t("max")}: {temp.max}
-											</h5>
-										</div>
-									</div>
-									{/*== DEGREE & DESCRIPTION ==*/}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <h5>
+                        {t("min")}: {temp.min}
+                      </h5>
+                      <h5 style={{ margin: "0px 5px" }}>|</h5>
+                      <h5>
+                        {t("max")}: {temp.max}
+                      </h5>
+                    </div>
+                  </div>
 
-									<CloudIcon
-										style={{
-											fontSize: "200px",
-											color: "white",
-										}}
-									/>
-								</div>
-								{/*= CONTAINER OF DEGREE + CLOUD ICON ==*/}
-							</div>
-							{/* == CONTENT == */}
-						</div>
-						{/*== CARD ==*/}
+                  <CloudIcon
+                    className="cloudIcon"
+                    style={{
+                      fontSize: "200px",
+                      color: "white",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
 
-						{/* TRANSLATION CONTAINER */}
-						<div
-							dir={direction}
-							style={{
-								width: "100%",
-								display: "flex",
-								justifyContent: "end",
-								marginTop: "20px",
-							}}
-						>
-							<Button
-								style={{ color: "white" }}
-								variant="text"
-								onClick={handleLanguageClick}
-							>
-								{locale == "en" ? "Arabic" : "إنجليزي"}
-							</Button>
-						</div>
-						{/*== TRANSLATION CONTAINER ==*/}
-					</div>
-					{/*== CONTENT CONTAINER ==*/}
-				</Container>
-			</ThemeProvider>
-		</div>
-	);
+            <div
+              dir={direction}
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "end",
+                marginTop: "20px",
+              }}
+            >
+              <Button
+                style={{ color: "white" }}
+                variant="text"
+                onClick={handleLanguageClick}
+              >
+                {locale === "en" ? "Arabic" : "إنجليزي"}
+              </Button>
+            </div>
+          </div>
+        </Container>
+      </ThemeProvider>
+    </div>
+  );
 }
 
 export default App;

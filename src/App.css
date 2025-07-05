@@ -40,6 +40,18 @@ body {
 		transform: rotate(360deg);
 	}
 }
+@media (max-width : 490px) {
+	.cloudIcon {
+		margin: auto;
+	}
+	.details {
+		flex-direction: column;
+	}
+	.up-details {
+		flex-direction: column;
+        align-items: center !important;
+	}
+}
 
 /* CUSTOM FONTS */
 @font-face {

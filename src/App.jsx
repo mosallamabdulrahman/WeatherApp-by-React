@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import CloudIcon from "@mui/icons-material/Cloud";
-import Button from "@mui/material/Button";
+// import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // EXTERNAL LIBRARIES
@@ -39,10 +39,10 @@ function App() {
 
   const direction = locale === "ar" ? "rtl" : "ltr";
 
-  function handleLanguageClick() {
-    const newLocale = locale === "en" ? "ar" : "en";
-    setLocale(newLocale);
-  }
+  // function handleLanguageClick() {
+  //   const newLocale = locale === "en" ? "ar" : "en";
+  //   setLocale(newLocale);
+  // }
 
   useEffect(() => {
     dispatch(fetchWeather());
@@ -172,13 +172,13 @@ function App() {
                 marginTop: "20px",
               }}
             >
-              <Button
+              {/* <Button
                 style={{ color: "white" }}
                 variant="text"
                 onClick={handleLanguageClick}
               >
                 {locale === "en" ? "Arabic" : "إنجليزي"}
-              </Button>
+              </Button> */}
             </div>
           </div>
         </Container>
